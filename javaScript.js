@@ -1,39 +1,36 @@
 function player(name, symbol) {
     function getName() {
-        console.log(name);
+        return name;
     };
 
     function getSymbol() {
-        console.log(symbol);
+        return symbol;
     };
 
-    function placeSymbol(boardLocation) {
-        gameBoard.splice(boardLocation, 1, symbol);
-    };
-
-    return {getName, getSymbol, placeSymbol};
+    return {getName, getSymbol};
 };
 
-function gameState() {
-    function getGameState() {
-        console.log(gameBoard);
-    };
-
-    return {getGameState};
-};
-
-
-const changeGameState = (function () {
+const gameBoard = (function () {
     // Start the array off blank
-    const gameBoard = Array(9).fill("");
+    const currentGameBoard = Array(9).fill("");
 
     function createNewBoard() {
-        gameBoard.fill("");
+        currentGameBoard.fill("");
     };
 
-    return {createNewBoard};
+    function placeSymbol(boardLocation, player) {
+        currentGameBoard.splice(boardLocation, 1, player.getSymbol());
+    };
+
+    function getGameState() {
+        console.log(currentGameBoard);
+    };
+
+
+    return {createNewBoard, placeSymbol, getGameState};
 })();
 
 const player1 = player('Josh', 'x');
 const player2 = player('Drake', 'o');
 
+gameBoard.placeSymbol(0, player1);
