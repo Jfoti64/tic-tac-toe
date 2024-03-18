@@ -138,6 +138,19 @@ const checkIfWinner = function(player) {
     }
 };
 
+const populateGameBoardElements = (function() {
+    // Create one div per cell.
+    for (let i = 0; i < gameBoard.getBoardColAndRowNum(); i++) {
+        for (let n = 0; n < gameBoard.getBoardColAndRowNum(); n++) {
+            const gameBoardCell = document.createElement("div");
+            gameBoardCell.classList.add("cell");
+            gameBoardCell.setAttribute("data-index", i.toString() + "-" + n.toString());
+            document.getElementById('gameBoard').appendChild(gameBoardCell);
+        }
+    }
+})();
+
+
 
 
 
