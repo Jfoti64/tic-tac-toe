@@ -27,7 +27,7 @@ const gameBoard = (function () {
     };
 
     function isSquareEmpty(placementLocation) {
-        return (currentGameBoard[placementLocation] == '');
+        return !currentGameBoard[placementLocation];
     };
 
 
@@ -52,16 +52,21 @@ const turnTracker = function() {
 };
 
 const currentTurn = function(player) {
-    let placementLocation = parseInt(prompt(player.getName() + ' Where would you like to place your: ' + player.getSymbol()));
-    if (!gameBoard.isSquareEmpty(placementLocation)) {
-        do {
-            placementLocation = parseInt(prompt(player.getName() + ' That square is taken. Please choose another location '));
+    let placementLocation;
+    do {
+        placementLocation = parseInt(prompt(player.getName() + ' Where would you like to place your: ' + player.getSymbol()));
+        if (isNaN(placementLocation)) {
+            alert('Please enter a valid number.');
+            continue; // Restart the loop
         }
-        while (!gameBoard.isSquareEmpty(placementLocation));
-    }
+        if (!gameBoard.isSquareEmpty(placementLocation)) {
+            alert('That square is taken. Please choose another location.');
+        }
+    } while (!gameBoard.isSquareEmpty(placementLocation) || isNaN(placementLocation)); // Continue loop if square is taken or input is invalid
     
     gameBoard.placeSymbol(placementLocation, player);
 };
+
 
 
 
