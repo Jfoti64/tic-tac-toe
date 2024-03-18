@@ -81,16 +81,18 @@ const currentTurn = function(player) {
 
     let placementLocation;
     let translatedPlacement;
-    let input
+    let input;
     do {
         input = prompt(player.getName() + ' Where would you like to place your: ' + player.getSymbol());
         placementLocation = parseInt(input);
-        if (!placementLocation || isNaN(placementLocation)) { // Check if input is cancelled
-            alert('Please enter a valid number.');
-            continue; // Restart the loop
-        }
+        if (isNaN(placementLocation) || placementLocation >= gameBoard.getTotalCells() || placementLocation < 0) {
+            if (placementLocation != 0) {
+                alert('Please enter a valid number between 0 and ' + (gameBoard.getTotalCells() - 1));
+                continue; // Restart the loop
+            }
+        }        
         translatedPlacement = translateDimensions(placementLocation);
-        if (!gameBoard.isSquareEmpty(placementLocation.row, placementLocation.col)) {
+        if (!gameBoard.isSquareEmpty(translatedPlacement.row, translatedPlacement.col)) {
             alert('That square is taken. Please choose another location.');
         }
     } while (!translatedPlacement || !gameBoard.isSquareEmpty(translatedPlacement.row, translatedPlacement.col));
@@ -101,6 +103,7 @@ const currentTurn = function(player) {
 
     return {getCurrentPlayer};
 };
+
 
 
 
