@@ -18,6 +18,10 @@ const gameBoard = (function () {
         ['', '', '']
     ];
 
+    function getTotalCells() {
+        return getBoardColAndRowNum() * getBoardColAndRowNum();
+    };
+
     function getGameBoard() {
         return currentGameBoard;
     };
@@ -40,13 +44,12 @@ const gameBoard = (function () {
     }
 
 
-    return {createNewBoard, placeSymbol, isSquareEmpty, getGameBoard, getBoardColAndRowNum};
+    return {createNewBoard, placeSymbol, isSquareEmpty, getGameBoard, getBoardColAndRowNum, getTotalCells};
 })();
 
 const turnTracker = function() {
-    const totalCells = gameBoard.getBoardColAndRowNum() * gameBoard.getBoardColAndRowNum();
     function startGame() {
-        for(let i = 0; i < totalCells; i++) {
+        for(let i = 0; i < gameBoard.getTotalCells(); i++) {
             if (i % 2 == 0) {
                 // Player1
                 currentTurn(player1);
@@ -77,23 +80,28 @@ const currentTurn = function(player) {
     };
 
     let placementLocation;
-    let translatedPlacement; // Define the variable outside the loop
+    let translatedPlacement;
+    let input
     do {
-        placementLocation = parseInt(prompt(player.getName() + ' Where would you like to place your: ' + player.getSymbol()));
-        translatedPlacement = translateDimensions(placementLocation); // Update its value inside the loop
-        if (isNaN(placementLocation)) {
+        input = prompt(player.getName() + ' Where would you like to place your: ' + player.getSymbol());
+        placementLocation = parseInt(input);
+        if (!placementLocation || isNaN(placementLocation)) { // Check if input is cancelled
             alert('Please enter a valid number.');
             continue; // Restart the loop
         }
-        if (!gameBoard.isSquareEmpty(translatedPlacement.row, translatedPlacement.col)) {
+        translatedPlacement = translateDimensions(placementLocation);
+        if (!gameBoard.isSquareEmpty(placementLocation.row, placementLocation.col)) {
             alert('That square is taken. Please choose another location.');
         }
-    } while (!gameBoard.isSquareEmpty(translatedPlacement.row, translatedPlacement.col) || isNaN(placementLocation));
+    } while (!translatedPlacement || !gameBoard.isSquareEmpty(translatedPlacement.row, translatedPlacement.col));
+
+
     
     gameBoard.placeSymbol(translatedPlacement, player);
 
     return {getCurrentPlayer};
 };
+
 
 
 const translateDimensions = function(oneDimensionalIn) {
@@ -111,7 +119,6 @@ const translateDimensions = function(oneDimensionalIn) {
 const checkIfWinner = function(player) {
     const boardState = gameBoard.getGameBoard();
 
-    // Check rows
     for (let i = 0; i < boardState.length; i++) {
         if (boardState[i][0] !== '' && boardState[i][0] === boardState[i][1] && boardState[i][1] === boardState[i][2]) {
             return true;
@@ -125,7 +132,6 @@ const checkIfWinner = function(player) {
         if (boardState[2][0] !== '' && boardState[2][0] === boardState[1][1] && boardState[1][1] === boardState[0][2]) {
             return true;
         }
-
     }
 };
 
