@@ -158,4 +158,4 @@ const populateGameBoardElements = (function() {
 const player1 = player('Josh', 'x');
 const player2 = player('Drake', 'o');
 
-turnTracker().startGame();
+//turnTracker().startGame();

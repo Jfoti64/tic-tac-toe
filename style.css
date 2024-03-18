@@ -1,0 +1,12 @@
+#gameBoard {
+    display: grid;
+    grid-template-columns: repeat(3, 150px);
+    grid-template-rows: repeat(3, 150px);
+}
+
+#gameBoard div {
+    height: 150px;
+    width: 150px;
+    background-color: lightgray;
+    border: solid black 2px;
+}
