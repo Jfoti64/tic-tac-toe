@@ -63,7 +63,6 @@ const turnTracker = function() {
                     break;
                 }
             }
-            console.log('tie');
         }
     }
     function endGame(player) {
@@ -117,6 +116,16 @@ const checkIfWinner = function(player) {
         if (boardState[i][0] !== '' && boardState[i][0] === boardState[i][1] && boardState[i][1] === boardState[i][2]) {
             return true;
         }
+        if (boardState[0][i] !== '' && boardState[0][i] === boardState[1][i] && boardState[1][i] === boardState[2][i]) {
+            return true;
+        }
+        if (boardState[0][0] !== '' && boardState[0][0] === boardState[1][1] && boardState[1][1] === boardState[2][2]) {
+            return true;
+        }
+        if (boardState[2][0] !== '' && boardState[2][0] === boardState[1][1] && boardState[1][1] === boardState[0][2]) {
+            return true;
+        }
+
     }
 };
 
