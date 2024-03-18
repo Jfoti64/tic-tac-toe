@@ -19,7 +19,7 @@ const gameBoard = (function () {
     ];
 
     function getGameBoard() {
-        console.log(currentGameBoard);
+        return currentGameBoard;
     };
 
     function getBoardColAndRowNum() {
@@ -50,10 +50,12 @@ const turnTracker = function() {
             if (i % 2 == 0) {
                 // Player1
                 currentTurn(player1);
+                checkIfWinner(player1);
             }
             else {
                 // Player2
                 currentTurn(player2);
+                checkIfWinner(player2);
             }
         }
     }
@@ -61,6 +63,10 @@ const turnTracker = function() {
 };
 
 const currentTurn = function(player) {
+    function getCurrentPlayer() {
+        return player;
+    };
+
     let placementLocation;
     let translatedPlacement; // Define the variable outside the loop
     do {
@@ -76,6 +82,8 @@ const currentTurn = function(player) {
     } while (!gameBoard.isSquareEmpty(translatedPlacement.row, translatedPlacement.col) || isNaN(placementLocation));
     
     gameBoard.placeSymbol(translatedPlacement, player);
+
+    return {getCurrentPlayer};
 };
 
 
@@ -90,6 +98,18 @@ const translateDimensions = function(oneDimensionalIn) {
     // Return the translated row and column positions as an object
     return { row: rowPosition, col: colPosition };
 };
+
+const checkIfWinner = function(player) {
+    const boardState = gameBoard.getGameBoard();
+
+    // Check rows
+    for (let i = 0; i < boardState.length; i++) {
+        if (boardState[i][0] !== '' && boardState[i][0] === boardState[i][1] && boardState[i][1] === boardState[i][2]) {
+            console.log(player.getName() + ' wins');
+        }
+    }
+};
+
 
 
 
