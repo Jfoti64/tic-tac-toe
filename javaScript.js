@@ -50,16 +50,26 @@ const turnTracker = function() {
             if (i % 2 == 0) {
                 // Player1
                 currentTurn(player1);
-                checkIfWinner(player1);
+                if (checkIfWinner(player1)) {
+                    endGame(player1);
+                    break;
+                }
             }
             else {
                 // Player2
                 currentTurn(player2);
-                checkIfWinner(player2);
+                if (checkIfWinner(player2)) {
+                    endGame(player2);
+                    break;
+                }
             }
+            console.log('tie');
         }
     }
-    return {startGame};
+    function endGame(player) {
+        console.log(player.getName() + ' Wins!');
+    };
+    return {startGame, endGame};
 };
 
 const currentTurn = function(player) {
@@ -105,7 +115,7 @@ const checkIfWinner = function(player) {
     // Check rows
     for (let i = 0; i < boardState.length; i++) {
         if (boardState[i][0] !== '' && boardState[i][0] === boardState[i][1] && boardState[i][1] === boardState[i][2]) {
-            console.log(player.getName() + ' wins');
+            return true;
         }
     }
 };
