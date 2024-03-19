@@ -8,7 +8,11 @@ document.addEventListener('DOMContentLoaded', function() {
             return symbol;
         };
 
-        return {getName, getSymbol};
+        function getPlayer() {
+            return player;
+        }
+
+        return {getName, getSymbol, getPlayer};
     };
 
     const gameBoard = (function () {
@@ -48,77 +52,42 @@ document.addEventListener('DOMContentLoaded', function() {
         return {createNewBoard, placeSymbol, isSquareEmpty, getGameBoard, getBoardColAndRowNum, getTotalCells};
     })();
 
-    const turnTracker = function() {
-        function startGame() {
-            for(let i = 0; i < gameBoard.getTotalCells(); i++) {
-                if (i % 2 == 0) {
-                    // Player1
-                    currentTurn(player1);
-                    if (checkIfWinner(player1)) {
-                        endGame(player1);
-                        break;
-                    }
+    const turnStatus = (function() {
+        let turnNum = 1;
+        let currentPlayer;
+        function takeTurn(boardLocation) {
+            if (turnNum > gameBoard.getTotalCells()) {
+                console.log('tie');
+            }
+            if (turnNum % 2 == 1) {
+                turnNum++;
+                currentPlayer = player1;
+                gameBoard.placeSymbol(boardLocation, player1);
+                if (checkIfWinner(player1)) {
+                    endGame(player1);
                 }
-                else {
-                    // Player2
-                    currentTurn(player2);
-                    if (checkIfWinner(player2)) {
-                        endGame(player2);
-                        break;
-                    }
+            } else {
+                turnNum++;
+                currentPlayer = player2;
+                gameBoard.placeSymbol(boardLocation, player2);
+                if (checkIfWinner(player2)) {
+                    endGame(player2);
                 }
             }
         }
+    
+        function getCurrentPlayer() {
+            return currentPlayer;
+        }
+    
         function endGame(player) {
             console.log(player.getName() + ' Wins!');
         };
-        return {startGame, endGame};
-    };
-
-    const currentTurn = function(player) {
-        function getCurrentPlayer() {
-            return player;
-        };
-
-        let placementLocation;
-        let translatedPlacement;
-        let input;
-        do {
-            input = prompt(player.getName() + ' Where would you like to place your: ' + player.getSymbol());
-            placementLocation = parseInt(input);
-            if (isNaN(placementLocation) || placementLocation >= gameBoard.getTotalCells() || placementLocation < 0) {
-                if (placementLocation != 0) {
-                    alert('Please enter a valid number between 0 and ' + (gameBoard.getTotalCells() - 1));
-                    continue; // Restart the loop
-                }
-            }        
-            translatedPlacement = translateDimensions(placementLocation);
-            if (!gameBoard.isSquareEmpty(translatedPlacement.row, translatedPlacement.col)) {
-                alert('That square is taken. Please choose another location.');
-            }
-        } while (!translatedPlacement || !gameBoard.isSquareEmpty(translatedPlacement.row, translatedPlacement.col));
-
-
         
-        gameBoard.placeSymbol(translatedPlacement, player);
-
-        return {getCurrentPlayer};
-    };
-
-
-
-
-    const translateDimensions = function(oneDimensionalIn) {
-        // Get the length of one side of the square grid (number of rows or columns)
-        const numCols = gameBoard.getBoardColAndRowNum();
-        
-        // Calculate the row and column positions from the one-dimensional input
-        const rowPosition = Math.floor(oneDimensionalIn / numCols);
-        const colPosition = oneDimensionalIn % numCols;
-
-        // Return the translated row and column positions as an object
-        return { row: rowPosition, col: colPosition };
-    };
+        // Return an object with getCurrentPlayer method
+        return { endGame, getCurrentPlayer, takeTurn };
+    })();
+    
 
     const checkIfWinner = function(player) {
         const boardState = gameBoard.getGameBoard();
@@ -151,17 +120,38 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     })();
 
+    const clickCells = (function() {
+        const cells = document.getElementsByClassName('cell');
+        for (let cell of cells) {
+            cell.addEventListener('click', (event) => {
+                console.log('clicked');
+                const clickedCell = event.target;
+                const dataIndex = clickedCell.getAttribute('data-index');
+                const boardLocation = {
+                    row: parseInt(dataIndex[0]),
+                    col: parseInt(dataIndex[2]),
+                };
+                turnStatus.takeTurn(boardLocation);
+                clickedCell.innerHTML = turnStatus.getCurrentPlayer().getSymbol();
+            });
+        }
+    })();
+    
+
     document.getElementById("addPlayers").addEventListener("submit", function(event) {
-        event.preventDefault();
-        
-        //turnTracker().startGame();
         let player1Name = document.getElementById('player1').value;
         let player2Name = document.getElementById('player2').value;
 
-        player1 = player(player1Name, 'x');
-        player2 = player(player2Name, 'o');
+        if (player1Name == '' || player2Name == '') {
+            alert('Enter a name for each player');
+        }
+        else {
+            event.preventDefault();
 
-        turnTracker().startGame();
-        console.log('start game');
+            player1 = player(player1Name, 'x');
+            player2 = player(player2Name, 'o');
+
+            console.log('start game');
+        }
     });
 });
