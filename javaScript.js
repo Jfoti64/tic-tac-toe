@@ -83,8 +83,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     
         function endGame(player) {
-            alert(player.getName() + ' Wins!');
-            clickCells().removeClickListeners();
+            document.getElementById('results').innerHTML  = player.getName() + ' Wins!';
+            clickCells().disableClickListeners();
         };
         
         // Return an object with getCurrentPlayer method
@@ -124,8 +124,9 @@ document.addEventListener('DOMContentLoaded', function() {
     })();
 
     const clickCells = function() {
+        const cells = document.getElementsByClassName('cell');
+
         const addCellClickEvents = function() {
-            const cells = document.getElementsByClassName('cell');
             for (let cell of cells) {
                 cell.addEventListener('click', handleClick);
             }
@@ -145,13 +146,13 @@ document.addEventListener('DOMContentLoaded', function() {
             clickedCell.removeEventListener('click', handleClick);
         };
 
-        function removeClickListeners() {
+        function disableClickListeners() {
             const cells = document.getElementsByClassName('cell');
             for (let cell of cells) {
-                cell.removeEventListener('click', handleClick);
+                cell.classList.add('disabled');
             }
-        }
-        return {removeClickListeners, addCellClickEvents};
+        }        
+        return {disableClickListeners, addCellClickEvents};
     };
 
     const clickResetBtn = (function() {
