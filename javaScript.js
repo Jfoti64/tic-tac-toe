@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     })();
 
-    const clickCells = (function() {
+    const clickCells = function() {
         const cells = document.getElementsByClassName('cell');
         for (let cell of cells) {
             cell.addEventListener('click', handleClick);
@@ -141,6 +141,14 @@ document.addEventListener('DOMContentLoaded', function() {
             // Remove the click event listener after clicking
             clickedCell.removeEventListener('click', handleClick);
         }
+    };
+
+    const clickResetBtn = (function() {
+        resetBtn = document.getElementById('restart');
+
+        resetBtn.addEventListener('click', () => {
+            location.reload();
+        });
     })();
     
 
@@ -156,8 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             player1 = player(player1Name, 'x');
             player2 = player(player2Name, 'o');
-
-            console.log('start game');
+            clickCells();
         }
     });
 });
