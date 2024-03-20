@@ -60,20 +60,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentPlayer = player1;
                 gameBoard.placeSymbol(boardLocation, player1);
                 if (checkIfWinner(player1)) {
-                    endGame(player1);
+                    endGameWin(player1);
                 }
                 else if (turnNum > gameBoard.getTotalCells()) {
-                    console.log('tie');
+                    endGameTie();
                 }
             } else {
                 turnNum++;
                 currentPlayer = player2;
                 gameBoard.placeSymbol(boardLocation, player2);
                 if (checkIfWinner(player2)) {
-                    endGame(player2);
+                    endGameWin(player2);
                 }
                 else if (turnNum > gameBoard.getTotalCells()) {
-                    console.log('tie');
+                    endGameTie();
                 }
             }
         }
@@ -82,13 +82,18 @@ document.addEventListener('DOMContentLoaded', function() {
             return currentPlayer;
         }
     
-        function endGame(player) {
-            document.getElementById('results').innerHTML  = player.getName() + ' Wins!';
+        function endGameWin(player) {
+            document.getElementById('results').innerHTML  = player.getName() + ' WINS!';
+            clickCells().disableClickListeners();
+        };
+
+        function endGameTie() {
+            document.getElementById('results').innerHTML  = 'TIE!';
             clickCells().disableClickListeners();
         };
         
         // Return an object with getCurrentPlayer method
-        return { endGame, getCurrentPlayer, takeTurn };
+        return { endGameWin, getCurrentPlayer, takeTurn };
     })();
     
 
@@ -172,6 +177,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         else {
             event.preventDefault();
+
+            document.getElementById('results').innerHTML = 'Play';
     
             player1 = player(player1Name, 'x');
             player2 = player(player2Name, 'o');

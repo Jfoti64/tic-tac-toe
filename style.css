@@ -19,7 +19,7 @@
     place-items: center;
     grid-template-rows: repeat(3, 1fr);
     grid-template-columns: repeat(2, 1fr);
-    column-gap: 5px;
+    gap: 5px;
 }
 
 #addPlayers button {
@@ -69,6 +69,7 @@
     display: grid;
     place-items: center;
     font-size: 100px;
+    font-family: 'BetterOutline', sans-serif;
 }
 
 .cell.disabled {
