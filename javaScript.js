@@ -46,8 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function isSquareEmpty(row, col) {
             return currentGameBoard[row][col] === '';
-        }
-
+        };
 
         return {createNewBoard, placeSymbol, isSquareEmpty, getGameBoard, getBoardColAndRowNum, getTotalCells};
     })();
@@ -56,9 +55,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let turnNum = 1;
         let currentPlayer;
         function takeTurn(boardLocation) {
-            if (turnNum > gameBoard.getTotalCells()) {
-                console.log('tie');
-            }
             if (turnNum % 2 == 1) {
                 turnNum++;
                 currentPlayer = player1;
@@ -66,12 +62,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (checkIfWinner(player1)) {
                     endGame(player1);
                 }
+                else if (turnNum > gameBoard.getTotalCells()) {
+                    console.log('tie');
+                }
             } else {
                 turnNum++;
                 currentPlayer = player2;
                 gameBoard.placeSymbol(boardLocation, player2);
                 if (checkIfWinner(player2)) {
                     endGame(player2);
+                }
+                else if (turnNum > gameBoard.getTotalCells()) {
+                    console.log('tie');
                 }
             }
         }
@@ -81,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     
         function endGame(player) {
-            console.log(player.getName() + ' Wins!');
+            alert(player.getName() + ' Wins!');
         };
         
         // Return an object with getCurrentPlayer method
@@ -123,17 +125,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const clickCells = (function() {
         const cells = document.getElementsByClassName('cell');
         for (let cell of cells) {
-            cell.addEventListener('click', (event) => {
-                console.log('clicked');
-                const clickedCell = event.target;
-                const dataIndex = clickedCell.getAttribute('data-index');
-                const boardLocation = {
-                    row: parseInt(dataIndex[0]),
-                    col: parseInt(dataIndex[2]),
-                };
-                turnStatus.takeTurn(boardLocation);
-                clickedCell.innerHTML = turnStatus.getCurrentPlayer().getSymbol();
-            });
+            cell.addEventListener('click', handleClick);
+        }
+
+        function handleClick(event) {
+            console.log('clicked');
+            const clickedCell = event.target;
+            const dataIndex = clickedCell.getAttribute('data-index');
+            const boardLocation = {
+                row: parseInt(dataIndex[0]),
+                col: parseInt(dataIndex[2]),
+            };
+            turnStatus.takeTurn(boardLocation);
+            clickedCell.innerHTML = turnStatus.getCurrentPlayer().getSymbol();
+            // Remove the click event listener after clicking
+            clickedCell.removeEventListener('click', handleClick);
         }
     })();
     
