@@ -84,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
         function endGame(player) {
             alert(player.getName() + ' Wins!');
+            clickCells().removeClickListeners();
         };
         
         // Return an object with getCurrentPlayer method
@@ -123,11 +124,13 @@ document.addEventListener('DOMContentLoaded', function() {
     })();
 
     const clickCells = function() {
-        const cells = document.getElementsByClassName('cell');
-        for (let cell of cells) {
-            cell.addEventListener('click', handleClick);
-        }
-
+        const addCellClickEvents = function() {
+            const cells = document.getElementsByClassName('cell');
+            for (let cell of cells) {
+                cell.addEventListener('click', handleClick);
+            }
+        };
+        
         function handleClick(event) {
             console.log('clicked');
             const clickedCell = event.target;
@@ -140,7 +143,15 @@ document.addEventListener('DOMContentLoaded', function() {
             clickedCell.innerHTML = turnStatus.getCurrentPlayer().getSymbol();
             // Remove the click event listener after clicking
             clickedCell.removeEventListener('click', handleClick);
+        };
+
+        function removeClickListeners() {
+            const cells = document.getElementsByClassName('cell');
+            for (let cell of cells) {
+                cell.removeEventListener('click', handleClick);
+            }
         }
+        return {removeClickListeners, addCellClickEvents};
     };
 
     const clickResetBtn = (function() {
@@ -150,21 +161,28 @@ document.addEventListener('DOMContentLoaded', function() {
             location.reload();
         });
     })();
-    
 
-    document.getElementById("addPlayers").addEventListener("submit", function(event) {
+    function handlePlayerSubmission(event) {
         let player1Name = document.getElementById('player1').value;
         let player2Name = document.getElementById('player2').value;
-
+    
         if (player1Name == '' || player2Name == '') {
             alert('Enter a name for each player');
         }
         else {
             event.preventDefault();
-
+    
             player1 = player(player1Name, 'x');
             player2 = player(player2Name, 'o');
-            clickCells();
+            clickCells().addCellClickEvents();
+    
+            // Remove the event listener after it's been executed
+            document.getElementById("start").removeEventListener("click", handlePlayerSubmission);
         }
-    });
+    }
+
+    const addPlayerEventListener = (function() {
+        document.getElementById("start").addEventListener("click", handlePlayerSubmission);
+    })();
+    
 });
